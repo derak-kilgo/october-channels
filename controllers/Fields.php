@@ -102,7 +102,7 @@ class Fields extends Controller
     {
         parent::__construct();
 
-        BackendMenu::setContext('Mey.Fields', 'fields', 'fields');
+        BackendMenu::setContext('Mey.Channels', 'channels', 'fields');
     }
 
 }

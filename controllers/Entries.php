@@ -80,7 +80,7 @@ class Entries extends Controller
 
         parent::__construct();
 
-        BackendMenu::setContext('Mey.Entries', 'entries', 'entries');
+        BackendMenu::setContext('Mey.Channels', 'channels', 'entries');
     }
 
     public function buildFormConfig()

@@ -42,7 +42,7 @@ class CreateEntriesTable extends Migration
     public function down()
     {
         Schema::drop('mey_entries');
-        Schema::drop('mey_entry_field');
+        Schema::drop('mey_entry_fields');
     }
 
 }
