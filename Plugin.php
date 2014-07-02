@@ -43,17 +43,17 @@ class Plugin extends PluginBase
                 'permissions' => ['channels.*'],
                 'order'       => 212,
                 'sideMenu' => [
-                    'channels' => [
-                        'label'       => 'Channels',
-                        'icon'        => 'icon-cube',
-                        'url'         => Backend::url('mey/channels/channels'),
-                        'permissions' => ['channels.access_channels'],
-                    ],
                     'entries' => [
                         'label'       => 'Entries',
                         'icon'        => 'icon-cubes',
                         'url'         => Backend::url('mey/channels/entries'),
                         'permissions' => ['entries.*'],
+                    ],
+                    'channels' => [
+                        'label'       => 'Channels',
+                        'icon'        => 'icon-cube',
+                        'url'         => Backend::url('mey/channels/channels'),
+                        'permissions' => ['channels.access_channels'],
                     ],
                     'fields' => [
                         'label'       => 'Fields',

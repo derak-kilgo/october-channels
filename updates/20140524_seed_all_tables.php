@@ -41,6 +41,18 @@ class SeedAllTables extends Seeder
             'description' => 'A Date Picker',
         ]);
 
+        FieldType::create([
+            'name' => 'Image',
+            'short_name' => 'fileupload',
+            'description' => 'An Image',
+            'options' => json_encode(
+                [
+                    'mode' => 'image',
+                    'imageWidth' => 200,
+                    'imageHeight' => 200,
+                ]
+            ),
+        ]);
 
     }
 }

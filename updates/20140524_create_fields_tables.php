@@ -15,6 +15,7 @@ class CreateFieldsTable extends Migration
             $table->increments('id')->primaryKey();
             $table->string('name');
             $table->string('short_name');
+            $table->string('options')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

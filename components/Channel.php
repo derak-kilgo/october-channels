@@ -62,16 +62,19 @@ class Channel extends ComponentBase
         $sortBy = $this->property('sortBy');
         $orderBy = $this->property('orderBy');
         $limit = $this->property('limit');
-        $currentChannel = ChannelModel::where('short_name', '=', $this->property('channelName'))->firstOrFail();
-        $entries = $currentChannel
-            ->entries()
-            ->orderBy($sortBy, $orderBy)
-            ->limit($limit)
-            ->with([ 'fields', 'fields.field' ])
-            ->where('published', '=', 1, 'AND')
-            ->where('published_at', '<=', date("Y-m-d H:i:s"))
-            ->get();
-        $this->entries = $this->organizeEntryFields($entries);
+        $currentChannel = ChannelModel::where('short_name', '=', $this->property('channelName'))->first();
+        if ($currentChannel) {
+            $entries = $currentChannel
+                ->entries()
+                ->limit($limit)
+                ->with([ 'fields', 'fields.field' ])
+                ->where('published', '=', 1, 'AND')
+                ->where('published_at', '<=', date("Y-m-d H:i:s"))
+                ->orderBy($sortBy, $orderBy)
+                ->get();
+
+            $this->entries = $this->organizeEntryFields($entries);
+        }
     }
 
     private function organizeEntryFields($entryCollection)
@@ -89,6 +92,7 @@ class Channel extends ComponentBase
             }
             $collection[$entry->short_name] = $fields;
         }
+        //var_dump($collection); exit;
         return $collection;
     }
 }

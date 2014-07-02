@@ -13,36 +13,45 @@ class Channels extends Controller
         'Backend.Behaviors.ListController'
     ];
 
+    public $bodyClass = 'compact-container';
+
     public $formConfig = [
         'name' => 'Channels',
         'form' =>  [
             'fields' => [
                 'name' => [
                     'label' => 'Name',
+                    'placeholder' => 'Channel Name',
                     'span' => 'left'
                 ],
                 'short_name' => [
                     'label' => 'Short Name',
                     'span' => 'right',
+                    'placeholder' => 'Channel Short Name',
                     'attributes' => [
                         'data-input-preset' => 'input[name="Channel[name]"]',
                         'data-input-preset-type' => 'slug',
                         'data-input-preset-closest-parent' => 'form',
                     ]
                 ],
-                'description' => [
-                    'label' => 'Description',
-                    'stretch' => true,
-                    'type' => 'textarea',
-                    'options' =>[
-                        'fontSize' => 20,
-                        'margin' => 15
-                    ],
-                ],
+                'toolbar' => [
+                    'type' => 'partial',
+                    'path' => 'channel_toolbar',
+                    'cssClass' => 'collapse-visible',
+                ]
             ],
             'secondaryTabs' => [
                 'stretch' => true,
                 'fields' => [
+                    'description' => [
+                        'label' => 'Description',
+                        'tab' => 'Manage',
+                        'type' => 'textarea',
+                        'options' =>[
+                            'fontSize' => 20,
+                            'margin' => 15
+                        ],
+                    ],
                     'fields' => [
                         'tab' => 'Fields',
                         'type' => 'relation',

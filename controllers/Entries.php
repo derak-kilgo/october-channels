@@ -19,7 +19,33 @@ class Entries extends Controller
         'Backend.Behaviors.ListController'
     ];
 
+    public $needsDefault;
+
     public $formConfig = [];
+
+    public $bodyClass = 'compact-container';
+
+    public $entryDefaults = [
+        'description' => [
+            'tab' => 'Manage',
+            'label' => 'Description',
+            'type' => 'textarea',
+            'span' => 'left',
+        ],
+        'published_at' => [
+            'tab' => 'Manage',
+            'label' => 'Publish On',
+            'type' => 'datepicker',
+            'span' => 'right',
+        ],
+        'published' => [
+            'tab' => 'Manage',
+            'label' => 'Publish',
+            'type' => 'checkbox',
+            'span' => 'right',
+            'cssClass' => 'checkbox-align'
+        ],
+    ];
 
     public $listConfig = [
         'list' => [
@@ -49,7 +75,7 @@ class Entries extends Controller
             'title' => 'Manage Entries',
             'recordUrl' => 'mey/channels/entries/update/:id',
             'noRecordsMessage' => 'backend::lang.list.no_records',
-            'recordsPerPage' => 10,
+            'recordsPerPage' => 25,
             'toolbar' => [
                 'buttons' => 'list_toolbar',
                 'search' => [
@@ -72,6 +98,8 @@ class Entries extends Controller
                 'channel' => [
                     'label' => 'Channel',
                     'type' => 'relation',
+                    'tab' => 'Manage',
+                    'span' => 'right',
                 ],
             ];
         }
@@ -79,6 +107,22 @@ class Entries extends Controller
         $this->formConfig = $this->buildFormConfig();
 
         parent::__construct();
+
+        //This enable the default values to be populated in the backend
+        \Event::listen('backend.form.extendFields', function($widget) {
+            // This should reference your controller
+            $controller = $widget->getController();
+            if (!$controller instanceof \Mey\Channels\Controllers\Entries) {
+                return;
+            }
+
+            $fields = $controller->needsDefault;
+            if (!empty($fields)) {
+                foreach ($controller->needsDefault as $field => $value) {
+                    $widget->allFields[$field]->value = $value;
+                }
+            }
+        });
 
         BackendMenu::setContext('Mey.Channels', 'channels', 'entries');
     }
@@ -91,37 +135,28 @@ class Entries extends Controller
                 'fields' => [
                     'name' => [
                         'label' => 'Name',
-                        'span' => 'left'
+                        'placeholder' => 'Entry Name',
+                        'span' => 'left',
                     ],
                     'short_name' => [
                         'label' => 'Short Name',
+                        'placeholder' => 'Entry Short Name',
                         'span' => 'right',
                         'attributes' => [
                             'data-input-preset' => 'input[name="Entry[name]"]',
-                            'data-input-preset-type' => 'slug',
+                            'data-input-preset-type' => 'camel',
                             'data-input-preset-closest-parent' => 'form',
                         ]
                     ],
-                    'description' => [
-                        'label' => 'Description',
-                        'type' => 'textarea',
-                        'span' => 'left',
-                        'size' => 'small',
-                    ],
-                    'published' => [
-                        'label' => 'Publish',
-                        'type' => 'checkbox',
-                        'span' => 'right'
-                    ],
-                    'published_at' => [
-                        'label' => 'Publish On',
-                        'type' => 'datepicker',
-                        'span' => 'right'
-                    ],
+                    'toolbar' => [
+                        'type' => 'partial',
+                        'path' => 'post_toolbar',
+                        'cssClass' => 'collapse-visible',
+                    ]
                 ],
                 'secondaryTabs' => [
-                    'fields' => $this->entryFields
-                ]
+                    'fields' => $this->entryDefaults + $this->entryFields
+                ],
             ],
             'modelClass' => 'Mey\Channels\Models\Entry',
 
@@ -151,6 +186,7 @@ class Entries extends Controller
                 $formConfig["entryField"][$channelField->short_name]["new"][$channelField->id] = [
                     'label' => $channelField->name,
                     'type' => $fieldType->short_name,
+                    'tab' => 'Fields',
                 ];
             }
             if (!empty($entryFields)) {
@@ -159,9 +195,9 @@ class Entries extends Controller
                     $fieldType = $field->fieldType()->first();
                     $formConfig["entryField"][$field->short_name][$entryField->id] = [
                         'label' => $field->name,
+                        'tab' => 'Fields',
                         'type' => $fieldType->short_name,
                         'default' => $entryField->value,
-                        'forceDefault' => true,
                     ];
                 }
             }
@@ -171,6 +207,7 @@ class Entries extends Controller
                     $existingFieldKey = array_keys($fieldConfig)[0];
                     $existingFieldValue = array_shift($fieldConfig);
                     $formConfig["entryField][{$fieldName}][{$existingFieldKey}]"] = $existingFieldValue;
+                    $this->needsDefault["entryField][{$fieldName}][{$existingFieldKey}]"] = $existingFieldValue['default'];
                 } else {
                     $newFieldConfig = array_shift($fieldConfig);
                     $newFieldKey = array_keys($newFieldConfig)[0];

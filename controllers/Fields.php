@@ -13,16 +13,20 @@ class Fields extends Controller
         'Backend.Behaviors.ListController',
     ];
 
+    public $bodyClass = 'compact-container';
+
     public $formConfig = [
         'name' => 'Fields',
         'form' =>  [
             'fields' => [
                 'name' => [
                     'label' => 'Name',
+                    'placeholder' => 'Field Name',
                     'span' => 'left'
                 ],
                 'short_name' => [
                     'label' => 'Short Name',
+                    'placeholder' => 'Field Short Name',
                     'span' => 'right',
                     'attributes' => [
                         'data-input-preset' => 'input[name="Field[name]"]',
@@ -30,19 +34,30 @@ class Fields extends Controller
                         'data-input-preset-closest-parent' => 'form',
                     ]
                 ],
-                'description' => [
-                    'label' => 'Description',
-                    'stretch' => true,
-                    'type' => 'textarea',
-                    'options' =>[
-                        'fontSize' => 20,
-                        'margin' => 15
-                    ],
+                'toolbar' => [
+                    'type' => 'partial',
+                    'path' => 'field_toolbar',
+                    'cssClass' => 'collapse-visible',
                 ],
-                'fieldType' => [
-                    'label' => 'Field Type',
-                    'stretch' => true,
-                    'type' => 'relation',
+            ],
+            'secondaryTabs' => [
+                'fields' => [
+                    'description' => [
+                        'label' => 'Description',
+                        'tab' => 'Manage',
+                        'stretch' => true,
+                        'type' => 'textarea',
+                        'options' =>[
+                            'fontSize' => 20,
+                            'margin' => 15
+                        ],
+                    ],
+                    'fieldType' => [
+                        'label' => 'Field Type',
+                        'tab' => 'Manage',
+                        'stretch' => true,
+                        'type' => 'relation',
+                    ],
                 ],
             ],
         ],

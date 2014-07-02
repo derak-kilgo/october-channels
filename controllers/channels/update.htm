@@ -1,50 +1,19 @@
-<?php Block::put('breadcrumb') ?>
-    <ul>
-        <li><a href="<?= Backend::url('mey/channels/channels') ?>">Channels</a></li>
-        <li><?= e($this->pageTitle) ?></li>
-    </ul>
-<?php Block::endPut() ?>
-
 <?php if (!$this->fatalError): ?>
 
-    <?= Form::open(['class'=>'layout-item stretch layout-column']) ?>
+    <div class="layout fancy-layout">
+        <?= Form::open([
+            'class' => 'layout',
+            'data-change-monitor' => 'true',
+            'data-window-close-confirm' => 'The channel is not saved.',
+        ]) ?>
+        <?= $this->formRenderOutsideFields() ?>
 
-        <?= $this->formRender() ?>
-
-        <div class="form-buttons layout-item fix">
-            <div class="loading-indicator-container">
-                <button
-                    type="submit"
-                    data-request="onSave"
-                    data-request-data="redirect:0"
-                    data-hotkey="ctrl+s"
-                    data-hotkey-mac="cmd+s"
-                    data-load-indicator="Saving Channel..."
-                    class="btn btn-primary">
-                    <u>S</u>ave
-                </button>
-                <button
-                    type="button"
-                    data-request="onSave"
-                    data-request-data="close:1"
-                    data-hotkey="ctrl+enter"
-                    data-hotkey-mac="cmd+enter"
-                    data-load-indicator="Saving Channel..."
-                    class="btn btn-default">
-                    Save and Close
-                </button>
-                <button
-                    type="button"
-                    class="oc-icon-trash-o btn-icon danger pull-right"
-                    data-request="onDelete"
-                    data-load-indicator="Deleting Channel..."
-                    data-request-confirm="Do you really want to delete this Channel?">
-                </button>
-
-                <span class="btn-text">or <a href="<?= Backend::url('mey/channels/channels') ?>">Cancel</a></span>
-            </div>
+        <div class="container">
+            <?= $this->formRenderSecondaryTabs() ?>
         </div>
-    <?= Form::close() ?>
+
+        <?= Form::close() ?>
+    </div>
 
 <?php else: ?>
     <p class="flash-message static error"><?= e($this->fatalError) ?></p>

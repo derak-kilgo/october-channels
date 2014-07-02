@@ -18,6 +18,13 @@ class Entry extends Model
      */
     protected $dates = ['published_at'];
 
+    protected $sortable = [
+        'name',
+        'short-name',
+        'description',
+
+    ];
+
     /*
      * Validation
      */
@@ -49,4 +56,7 @@ class Entry extends Model
         return $this->belongsTo('Mey\Channels\Models\Channel', 'channel_id');
     }
 
+    public function image()
+    {
+    }
 }
