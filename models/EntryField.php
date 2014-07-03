@@ -16,7 +16,6 @@ class EntryField extends Model
      * Validation
      */
     public $rules = [
-        'value' => 'required',
     ];
 
     protected $guarded = [];
