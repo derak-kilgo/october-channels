@@ -16,6 +16,7 @@ class Field extends Model
      */
     public $rules = [
         'name' => 'required',
+        'short_name' => 'unique:mey_fields',
     ];
 
     protected $guarded = [];

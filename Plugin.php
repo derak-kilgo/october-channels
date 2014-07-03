@@ -66,5 +66,14 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerFormWidgets() {
+        return [
+            'Mey\Channels\FormWidgets\Asset' => [
+                'label' => 'Asset',
+                'alias' => 'asset'
+            ]
+        ];
+    }
+
 
 }

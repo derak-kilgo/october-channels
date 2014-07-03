@@ -1,0 +1,23 @@
+{
+  "name": "channels",
+  "version": "0.0.1",
+  "description": "Create channel / entry resources in your October CMS application.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/meyapps/october-channels.git"
+  },
+  "author": "Jared Meyering",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meyapps/october-channels/issues"
+  },
+  "homepage": "https://github.com/meyapps/october-channels",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-sass": "^0.7.3",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}

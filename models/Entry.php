@@ -30,6 +30,7 @@ class Entry extends Model
      */
     public $rules = [
         'name' => 'required',
+        'short_name' => 'unique:mey_entries',
     ];
 
     /**
@@ -56,7 +57,4 @@ class Entry extends Model
         return $this->belongsTo('Mey\Channels\Models\Channel', 'channel_id');
     }
 
-    public function image()
-    {
-    }
 }

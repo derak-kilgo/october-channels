@@ -3,16 +3,36 @@
     <div class="layout fancy-layout">
         <?= Form::open([
             'class' => 'layout',
-            'data-change-monitor' => 'true',
-            'data-window-close-confirm' => 'The channel is not saved.',
         ]) ?>
         <?= $this->formRenderOutsideFields() ?>
 
-        <div class="container">
+        <div class="channels-container">
             <?= $this->formRenderSecondaryTabs() ?>
-        </div>
 
-        <?= Form::close() ?>
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s"
+                    data-hotkey-mac="cmd+s"
+                    data-load-indicator="Creating Channel..."
+                    class="btn btn-primary">
+                    Create
+                </button>
+                <button
+                    type="button"
+                    data-request="onSave"
+                    data-request-data="close:1"
+                    data-hotkey="ctrl+enter"
+                    data-hotkey-mac="cmd+enter"
+                    data-load-indicator="Creating Channel..."
+                    class="btn btn-default">
+                    Create and Close
+                </button>
+                <span class="btn-text">or <a href="<?= Backend::url('mey/channels/channels') ?>">Cancel</a></span>
+            </div>
+            <?= Form::close() ?>
+        </div>
     </div>
 
 <?php else: ?>

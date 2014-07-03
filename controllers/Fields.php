@@ -30,7 +30,7 @@ class Fields extends Controller
                     'span' => 'right',
                     'attributes' => [
                         'data-input-preset' => 'input[name="Field[name]"]',
-                        'data-input-preset-type' => 'slug',
+                        'data-input-preset-type' => 'camel',
                         'data-input-preset-closest-parent' => 'form',
                     ]
                 ],
@@ -42,22 +42,18 @@ class Fields extends Controller
             ],
             'secondaryTabs' => [
                 'fields' => [
-                    'description' => [
-                        'label' => 'Description',
-                        'tab' => 'Manage',
-                        'stretch' => true,
-                        'type' => 'textarea',
-                        'options' =>[
-                            'fontSize' => 20,
-                            'margin' => 15
-                        ],
-                    ],
                     'fieldType' => [
                         'label' => 'Field Type',
                         'tab' => 'Manage',
-                        'stretch' => true,
+                        'span' => 'left',
                         'type' => 'relation',
                     ],
+                    'description' => [
+                        'label' => 'Description',
+                        'tab' => 'Manage',
+                        'span' => 'right',
+                        'type' => 'textarea',
+                    ,
                 ],
             ],
         ],
@@ -118,6 +114,7 @@ class Fields extends Controller
         parent::__construct();
 
         BackendMenu::setContext('Mey.Channels', 'channels', 'fields');
+        $this->addCss('/plugins/mey/channels/assets/css/mey.channels.main.css');
     }
 
 }

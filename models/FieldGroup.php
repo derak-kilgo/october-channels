@@ -17,6 +17,7 @@ class FieldGroup extends Model
      */
     public $rules = [
         'name' => 'required',
+        'short_name' => 'unique:mey_field_groups',
     ];
 
     protected $guarded = [];

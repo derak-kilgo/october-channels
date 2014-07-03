@@ -1,0 +1,12 @@
+$containerMargin: 15px;
+
+.channels-container {
+    margin-left: $containerMargin;
+    margin-right: $containerMargin;
+
+    /* Fix to go full width on the nav bar */
+    .nav {
+        margin-left: -$containerMargin;
+        margin-right: -$containerMargin;
+    }
+}

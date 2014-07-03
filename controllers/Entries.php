@@ -93,17 +93,6 @@ class Entries extends Controller
             $this->initForm($entryId);
         }
 
-        if (Request::segment(5) === 'create') {
-            $this->entryFields = [
-                'channel' => [
-                    'label' => 'Channel',
-                    'type' => 'relation',
-                    'tab' => 'Manage',
-                    'span' => 'right',
-                ],
-            ];
-        }
-
         $this->formConfig = $this->buildFormConfig();
 
         parent::__construct();
@@ -125,6 +114,7 @@ class Entries extends Controller
         });
 
         BackendMenu::setContext('Mey.Channels', 'channels', 'entries');
+        $this->addCss('/plugins/mey/channels/assets/css/mey.channels.main.css');
     }
 
     public function buildFormConfig()
@@ -133,6 +123,13 @@ class Entries extends Controller
             'name' => 'Entries',
             'form' =>  [
                 'fields' => [
+                    'channel' => [
+                        'label' => 'Channel',
+                        'type' => 'relation',
+                        'tab' => 'Manage',
+                        'span' => 'left',
+                        'context' => 'create',
+                    ],
                     'name' => [
                         'label' => 'Name',
                         'placeholder' => 'Entry Name',
@@ -150,7 +147,7 @@ class Entries extends Controller
                     ],
                     'toolbar' => [
                         'type' => 'partial',
-                        'path' => 'post_toolbar',
+                        'path' => 'entry_toolbar',
                         'cssClass' => 'collapse-visible',
                     ]
                 ],
@@ -182,6 +179,7 @@ class Entries extends Controller
 
         if ($channelFields->count() >= 1) {
             foreach ($channelFields as $channelField) {
+                $validChannelFields[] = $channelField->short_name;
                 $fieldType = $channelField->fieldType()->first();
                 $formConfig["entryField"][$channelField->short_name]["new"][$channelField->id] = [
                     'label' => $channelField->name,
@@ -192,13 +190,15 @@ class Entries extends Controller
             if (!empty($entryFields)) {
                 foreach ($entryFields as $entryField) {
                     $field = $entryField->field()->first();
-                    $fieldType = $field->fieldType()->first();
-                    $formConfig["entryField"][$field->short_name][$entryField->id] = [
-                        'label' => $field->name,
-                        'tab' => 'Fields',
-                        'type' => $fieldType->short_name,
-                        'default' => $entryField->value,
-                    ];
+                    if ($field instanceof Field && in_array($field->short_name, $validChannelFields)) {
+                        $fieldType = $field->fieldType()->first();
+                        $formConfig["entryField"][$field->short_name][$entryField->id] = [
+                            'label' => $field->name,
+                            'tab' => 'Fields',
+                            'type' => $fieldType->short_name,
+                            'default' => $entryField->value,
+                        ];
+                    }
                 }
             }
             foreach ($formConfig['entryField'] as $fieldName => $fieldConfig) {

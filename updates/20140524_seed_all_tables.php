@@ -15,8 +15,6 @@ class SeedAllTables extends Seeder
 
     public function run()
     {
-
-
         FieldType::create([
             'name' => 'Text',
             'short_name' => 'text',
@@ -30,29 +28,9 @@ class SeedAllTables extends Seeder
         ]);
 
         FieldType::create([
-            'name' => 'Dropdown',
-            'short_name' => 'dropdown',
-            'description' => 'Dropdown menu for multiple selection',
-        ]);
-
-        FieldType::create([
             'name' => 'Date',
             'short_name' => 'datepicker',
             'description' => 'A Date Picker',
         ]);
-
-        FieldType::create([
-            'name' => 'Image',
-            'short_name' => 'fileupload',
-            'description' => 'An Image',
-            'options' => json_encode(
-                [
-                    'mode' => 'image',
-                    'imageWidth' => 200,
-                    'imageHeight' => 200,
-                ]
-            ),
-        ]);
-
     }
 }

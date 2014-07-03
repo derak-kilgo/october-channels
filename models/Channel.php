@@ -17,6 +17,7 @@ class Channel extends Model
      */
     public $rules = [
         'name' => 'required',
+        'short_name' => 'unique:mey_channels',
     ];
 
     /**

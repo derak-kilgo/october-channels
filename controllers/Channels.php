@@ -30,7 +30,7 @@ class Channels extends Controller
                     'placeholder' => 'Channel Short Name',
                     'attributes' => [
                         'data-input-preset' => 'input[name="Channel[name]"]',
-                        'data-input-preset-type' => 'slug',
+                        'data-input-preset-type' => 'camel',
                         'data-input-preset-closest-parent' => 'form',
                     ]
                 ],
@@ -46,14 +46,12 @@ class Channels extends Controller
                     'description' => [
                         'label' => 'Description',
                         'tab' => 'Manage',
+                        'span' => 'left',
                         'type' => 'textarea',
-                        'options' =>[
-                            'fontSize' => 20,
-                            'margin' => 15
-                        ],
                     ],
                     'fields' => [
-                        'tab' => 'Fields',
+                        'tab' => 'Manage',
+                        'span' => 'right',
                         'type' => 'relation',
                         'commentAbove' => 'Choose the fields belonging to this Channel',
                         'placeholder' => 'No Fields'
@@ -92,6 +90,11 @@ class Channels extends Controller
                         'relation' => 'fields',
                         'select' => 'mey_fields.name',
                     ],
+                    //'create_button' => [
+                    //    'label' => 'New Entry',
+                    //    'type' => 'partial',
+                    //    'path' => 'channel_toolbar',
+                    //],
                 ],
             ],
             'modelClass' => 'Mey\Channels\Models\Channel',
@@ -113,5 +116,6 @@ class Channels extends Controller
         parent::__construct();
 
         BackendMenu::setContext('Mey.Channels', 'channels', 'channels');
+        $this->addCss('/plugins/mey/channels/assets/css/mey.channels.main.css');
     }
 }
