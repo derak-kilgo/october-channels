@@ -69,15 +69,25 @@ class Channel extends ComponentBase
                 ->limit($limit)
                 ->with([ 'fields', 'fields.field' ])
                 ->where('published', '=', 1, 'AND')
-                ->where('published_at', '<=', date("Y-m-d H:i:s"))
-                ->orderBy($sortBy, $orderBy)
+                ->orWhere(function($query){
+                    $query->where('published_at', '<=', date("Y-m-d H:i:s"))
+                    ->whereNull('published_at');
+                })
                 ->get();
 
-            $this->entries = $this->organizeEntryFields($entries);
+            $this->entries = $this->sortArray($this->organizeEntryFields($entries), $sortBy, $orderBy);
         }
     }
 
-    private function organizeEntryFields($entryCollection)
+    /**
+     * Takes all entry properties and entryfield values and creates an array
+     * of key=>values pairs for the view.
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $entryCollection
+     *
+     * @return array
+     */
+    private function organizeEntryFields(\Illuminate\Database\Eloquent\Collection $entryCollection)
     {
         $collection = [];
         $fields = [];
@@ -92,7 +102,38 @@ class Channel extends ComponentBase
             }
             $collection[$entry->short_name] = $fields;
         }
-        //var_dump($collection); exit;
+        return $collection;
+    }
+
+    /**
+     * Sort the array collection by the sort and order values specified in the
+     * component settings
+     *
+     * @param array $collection  The array collection
+     * @param mixed $sortValue   What value in the array should we sort on
+     * @param string $orderValue The order to sort the array
+     */
+    private function sortArray (array $collection, $sortValue, $orderValue = 'asc')
+    {
+        $descendingValues = [
+            'desc',
+            'des',
+        ];
+
+        //ascending or descending
+        $descending = in_array(strtolower($orderValue), $descendingValues);
+
+        usort($collection, function($a, $b) use ($sortValue, $descending) {
+            //Check for empty values in the array
+            if (!isset($a[$sortValue]) || !isset($b[$sortValue])) {
+                return;
+            }
+            if ($descending) {
+                return strcasecmp($b[$sortValue], $a[$sortValue]);
+            } else {
+                return strcasecmp($a[$sortValue], $b[$sortValue]);
+            }
+        });
         return $collection;
     }
 }

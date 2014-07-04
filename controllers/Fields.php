@@ -53,7 +53,7 @@ class Fields extends Controller
                         'tab' => 'Manage',
                         'span' => 'right',
                         'type' => 'textarea',
-                    ,
+                    ],
                 ],
             ],
         ],

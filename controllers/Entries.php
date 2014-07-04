@@ -83,35 +83,16 @@ class Entries extends Controller
     public function __construct()
     {
         $entryId = Request::segment(6);
+
         if (!empty($entryId)) {
             $this->initForm($entryId);
             $this->entry = Entry::find($entryId);
         }
 
+        $this->registerEventListener();
         $this->formConfig = $this->buildFormConfig();
 
         parent::__construct();
-
-        //This enable the default values to be populated in the backend
-        \Event::listen('backend.form.extendFields', function($widget) {
-            // This should reference your controller
-            $controller = $widget->getController();
-            if (!$controller instanceof \Mey\Channels\Controllers\Entries) {
-                return;
-            }
-
-            //Helps with published default values
-            if ($this->entry->published != 1) {
-                $widget->allFields['published']->value = 0;
-            }
-
-            $fields = $controller->needsDefault;
-            if (!empty($fields)) {
-                foreach ($fields as $field => $value) {
-                    $widget->allFields[$field]->value = $value;
-                }
-            }
-        });
 
         BackendMenu::setContext('Mey.Channels', 'channels', 'entries');
         $this->addCss('/plugins/mey/channels/assets/css/mey.channels.main.css');
@@ -255,7 +236,7 @@ class Entries extends Controller
                     $entryField = EntryField::create(
                         [
                             'field_id' => $field->id,
-                            'entry_id' => $entryId,
+                            'entry_id' => $entry->id,
                             'value' => $fieldValue
                         ]
                     );
@@ -268,5 +249,36 @@ class Entries extends Controller
         }
 
         \Flash::success('Entry Fields Saved Successfully');
+    }
+
+    private function registerEventListener()
+    {
+        //This enable the default values to be populated in the backend
+        \Event::listen('backend.form.extendFields', function($widget) {
+            // This should reference your controller
+            $controller = $widget->getController();
+            if (!$controller instanceof \Mey\Channels\Controllers\Entries) {
+                return;
+            }
+
+            if ($this->entry instanceof Entry) {
+                //Helps with published default values
+                if ($this->entry->published != 1) {
+                    $widget->allFields['published']->value = 0;
+                }
+            }
+
+            if (is_null($widget->allFields['published_at']->value)) {
+                $date = new \DateTime;
+                $widget->allFields['published_at']->value = $date->format('Y-m-d H:i:s');
+            }
+
+            $fields = $controller->needsDefault;
+            if (!empty($fields)) {
+                foreach ($fields as $field => $value) {
+                    $widget->allFields[$field]->value = $value;
+                }
+            }
+        });
     }
 }

@@ -56,5 +56,4 @@ class Entry extends Model
     {
         return $this->belongsTo('Mey\Channels\Models\Channel', 'channel_id');
     }
-
 }
