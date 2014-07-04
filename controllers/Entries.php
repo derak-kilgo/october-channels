@@ -19,6 +19,8 @@ class Entries extends Controller
         'Backend.Behaviors.ListController'
     ];
 
+    public $entry;
+
     public $needsDefault;
 
     public $formConfig = [];
@@ -26,23 +28,18 @@ class Entries extends Controller
     public $bodyClass = 'compact-container';
 
     public $entryDefaults = [
-        'description' => [
-            'tab' => 'Manage',
-            'label' => 'Description',
-            'type' => 'textarea',
-            'span' => 'left',
-        ],
         'published_at' => [
             'tab' => 'Manage',
             'label' => 'Publish On',
             'type' => 'datepicker',
-            'span' => 'right',
+            'span' => 'left',
         ],
         'published' => [
             'tab' => 'Manage',
             'label' => 'Publish',
             'type' => 'checkbox',
-            'span' => 'right',
+            'default' => 1,
+            'span' => 'left',
             'cssClass' => 'checkbox-align'
         ],
     ];
@@ -56,9 +53,6 @@ class Entries extends Controller
                     ],
                     'short_name' => [
                         'label' => 'Short Name'
-                    ],
-                    'description' => [
-                        'label' => 'Description'
                     ],
                     'channels' => [
                         'label' => 'Channel',
@@ -91,6 +85,7 @@ class Entries extends Controller
         $entryId = Request::segment(6);
         if (!empty($entryId)) {
             $this->initForm($entryId);
+            $this->entry = Entry::find($entryId);
         }
 
         $this->formConfig = $this->buildFormConfig();
@@ -105,9 +100,14 @@ class Entries extends Controller
                 return;
             }
 
+            //Helps with published default values
+            if ($this->entry->published != 1) {
+                $widget->allFields['published']->value = 0;
+            }
+
             $fields = $controller->needsDefault;
             if (!empty($fields)) {
-                foreach ($controller->needsDefault as $field => $value) {
+                foreach ($fields as $field => $value) {
                     $widget->allFields[$field]->value = $value;
                 }
             }
@@ -232,10 +232,14 @@ class Entries extends Controller
     public function update_onSave()
     {
         $inputs = \Input::all()['Entry'];
-        $entryId = Request::segment(6);
-        $entry = Entry::find($entryId);
+        $entry = $this->entry;
         $entryFieldValues = $inputs['entryField'];
         unset($inputs['entryField']);
+
+        //Override default behavior to not set published if left blank
+        if (!isset($inputs['published'])) {
+            $inputs['published'] = 0;
+        }
         foreach ($inputs as $property => $value) {
             $entry->$property = $value;
         }
@@ -248,7 +252,8 @@ class Entries extends Controller
                     $fieldId = array_keys($value)[0];
                     $fieldValue = array_shift($value);
                     $field = Field::find($fieldId);
-                    $entryField = EntryField::create([
+                    $entryField = EntryField::create(
+                        [
                             'field_id' => $field->id,
                             'entry_id' => $entryId,
                             'value' => $fieldValue
@@ -258,8 +263,8 @@ class Entries extends Controller
                     $entryField = EntryField::find($key);
                     $entryField->value = $value;
                 }
-                $entryField->save();
             }
+            $entryField->save();
         }
 
         \Flash::success('Entry Fields Saved Successfully');
