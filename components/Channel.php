@@ -6,6 +6,7 @@ use Cms\Classes\ComponentBase;
 use Cms\Classes\CmsPropertyHelper;
 use Mey\Channels\Models\Entry;
 use Mey\Channels\Models\Channel as ChannelModel;
+use Mey\Channels\Support\Collection;
 use Request;
 use Redirect;
 use App;
@@ -66,7 +67,6 @@ class Channel extends ComponentBase
         if ($currentChannel) {
             $entries = $currentChannel
                 ->entries()
-                ->limit($limit)
                 ->with([ 'fields', 'fields.field' ])
                 ->where('published', '=', 1, 'AND')
                 ->orWhere(function($query){
@@ -75,65 +75,13 @@ class Channel extends ComponentBase
                 })
                 ->get();
 
-            $this->entries = $this->sortArray($this->organizeEntryFields($entries), $sortBy, $orderBy);
+            $this->entries = Collection::buildFromCollection($entries)
+                ->organizeEntryFields()
+                ->sortValues($sortBy, $orderBy)
+                ->limit($limit);
         }
     }
 
-    /**
-     * Takes all entry properties and entryfield values and creates an array
-     * of key=>values pairs for the view.
-     *
-     * @param \Illuminate\Database\Eloquent\Collection $entryCollection
-     *
-     * @return array
-     */
-    private function organizeEntryFields(\Illuminate\Database\Eloquent\Collection $entryCollection)
-    {
-        $collection = [];
-        $fields = [];
-        foreach ($entryCollection as $entry) {
-            $entryAttributes = get_object_vars($entry)['attributes'];
-            foreach ($entryAttributes as $attributeName => $attributeValue) {
-                $fields[$attributeName] = $attributeValue;
-            }
 
-            foreach ($entry->fields as $field) {
-                $fields[$field->field->short_name] = $field->value;
-            }
-            $collection[$entry->short_name] = $fields;
-        }
-        return $collection;
-    }
 
-    /**
-     * Sort the array collection by the sort and order values specified in the
-     * component settings
-     *
-     * @param array $collection  The array collection
-     * @param mixed $sortValue   What value in the array should we sort on
-     * @param string $orderValue The order to sort the array
-     */
-    private function sortArray (array $collection, $sortValue, $orderValue = 'asc')
-    {
-        $descendingValues = [
-            'desc',
-            'des',
-        ];
-
-        //ascending or descending
-        $descending = in_array(strtolower($orderValue), $descendingValues);
-
-        usort($collection, function($a, $b) use ($sortValue, $descending) {
-            //Check for empty values in the array
-            if (!isset($a[$sortValue]) || !isset($b[$sortValue])) {
-                return;
-            }
-            if ($descending) {
-                return strcasecmp($b[$sortValue], $a[$sortValue]);
-            } else {
-                return strcasecmp($a[$sortValue], $b[$sortValue]);
-            }
-        });
-        return $collection;
-    }
 }
