@@ -12,6 +12,8 @@ class Entry extends Model
 
     public $table = 'mey_entries';
 
+    public $validationErrors;
+
     /**
      * The attributes that should be mutated to dates.
      * @var array
@@ -30,7 +32,7 @@ class Entry extends Model
      */
     public $rules = [
         'name' => 'required',
-        'short_name' => 'unique:mey_entries',
+        'short_name' => 'uniqueInChannel:mey_entries',
     ];
 
     /**
@@ -47,6 +49,11 @@ class Entry extends Model
 
     protected $guarded = [];
 
+    public function __construct()
+    {
+        $this->registerInputValidators();
+    }
+
     public function fields()
     {
         return $this->hasMany('Mey\Channels\Models\EntryField', 'entry_id');
@@ -55,5 +62,21 @@ class Entry extends Model
     public function channel()
     {
         return $this->belongsTo('Mey\Channels\Models\Channel', 'channel_id');
+    }
+
+    private function registerInputValidators()
+    {
+        $this->validationErrors = new \Illuminate\Support\MessageBag;
+        $model = $this;
+        \Validator::extend('uniqueInChannel', function($attribute, $value, $parameters) use ($model) {
+            $shortName = strtolower($value);
+            $channel = Channel::with('entries')->where('id', '=', $model->channel->id)->first();
+            foreach ($channel->entries as $entry) {
+                if (strtolower($entry->short_name) === $shortName) {
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 }

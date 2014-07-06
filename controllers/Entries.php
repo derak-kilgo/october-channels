@@ -5,6 +5,7 @@ namespace Mey\Channels\Controllers;
 use BackendMenu;
 use Backend\Classes\Controller;
 use Mey\Channels\Models\Entry;
+use Mey\Channels\Models\Channel;
 use Mey\Channels\Models\Field;
 use Mey\Channels\Models\EntryField;
 use Request;
@@ -85,11 +86,11 @@ class Entries extends Controller
         $entryId = Request::segment(6);
 
         if (!empty($entryId)) {
-            $this->initForm($entryId);
-            $this->entry = Entry::find($entryId);
+            $this->entry = Entry::with('fields', 'channel', 'channel.fields')->where('id', '=', $entryId)->first();
+            $this->initForm();
         }
 
-        $this->registerEventListener();
+        $this->registerEventListeners();
         $this->formConfig = $this->buildFormConfig();
 
         parent::__construct();
@@ -150,10 +151,11 @@ class Entries extends Controller
         ];
     }
 
-    public function initForm($id)
+    public function initForm()
     {
-        $entry = Entry::with('fields', 'channel', 'channel.fields')->where('id', '=', $id)->first();
+        $entry = $this->entry;
         $channel = $entry->channel;
+
         $channelFields = $channel->fields;
         $entryFields = $entry->fields;
         $formConfig = [];
@@ -251,7 +253,7 @@ class Entries extends Controller
         \Flash::success('Entry Fields Saved Successfully');
     }
 
-    private function registerEventListener()
+    private function registerEventListeners()
     {
         //This enable the default values to be populated in the backend
         \Event::listen('backend.form.extendFields', function($widget) {
@@ -281,4 +283,5 @@ class Entries extends Controller
             }
         });
     }
+
 }
