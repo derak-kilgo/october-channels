@@ -28,6 +28,10 @@ class Channel extends Model
         'fields' => ['Mey\Channels\Models\Field']
     ];
 
+    public $belongsTo = [
+        'channelType' => ['Mey\Channels\Models\ChannelType'],
+    ];
+
     public $hasMany = [
         'entries' => ['Mey\Channels\Models\Entry']
     ];
@@ -42,5 +46,10 @@ class Channel extends Model
     public function entries()
     {
         return $this->hasMany('Mey\Channels\Models\Entry', 'channel_id');
+    }
+
+    public function channelType()
+    {
+        return $this->belongsTo('Mey\Channels\Models\ChannelType', 'channel_type_id');
     }
 }

@@ -8,7 +8,7 @@ use Mey\Channels\Models\Entry;
 use Mey\Channels\Models\Field;
 use Mey\Channels\Models\EntryField;
 use Mey\Channels\Models\FieldGroup;
-use Mey\Channels\Models\FieldType;
+use Mey\Channels\Models\ChannelType;
 
 class SeedAllTables extends Seeder
 {
@@ -31,6 +31,11 @@ class SeedAllTables extends Seeder
             'name' => 'Date',
             'short_name' => 'datepicker',
             'description' => 'A Date Picker',
+        ]);
+
+        ChannelType::create([
+            'name' => 'Single',
+            'short_name' => 'single',
         ]);
     }
 }

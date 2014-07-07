@@ -39,7 +39,6 @@ class CreateFieldsTable extends Migration
             $table->string('config')->nullable();
             $table->text('description')->nullable();
             $table->integer('field_type_id')->unsigned();
-            //$table->foreign('field_type_id')->references('id')->on('mey_field_types');
             $table->timestamps();
             $table->softDeletes();
         });
