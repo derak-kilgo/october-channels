@@ -170,7 +170,7 @@ class Entries extends Controller
                     'tab' => 'Fields',
                 ];
             }
-            if (!empty($entryFields)) {
+            if ($entryFields->count() >= 1) {
                 foreach ($entryFields as $entryField) {
                     $field = $entryField->field()->first();
                     if ($field instanceof Field && in_array($field->short_name, $validChannelFields)) {
