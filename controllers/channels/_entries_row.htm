@@ -1,0 +1,14 @@
+<div class="col-xs-6 col-md-2">
+    <a href="<?= Backend::url('mey/channels/entries/update/'.$entry->id) ?>"><?=$entry->name?></a>
+</div>
+<div class="col-xs-6 col-md-2">
+    <?=$entry->created_at?>
+</div>
+<div class="col-xs-6 col-md-2">
+    <?=$entry->updated_at?>
+</div>
+<div class="col-xs-6 col-md-2">
+    <?php if ($entry->published): ?>
+    <i class="icon-check"> </i>
+    <?php endif ?>
+</div>

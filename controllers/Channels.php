@@ -4,6 +4,7 @@ namespace Mey\Channels\Controllers;
 
 use BackendMenu;
 use Backend\Classes\Controller;
+use Mey\Channels\Models\Channel;
 
 class Channels extends Controller
 {
@@ -49,9 +50,18 @@ class Channels extends Controller
                         'span' => 'left',
                         'type' => 'textarea',
                     ],
-                    'fields' => [
+                    'channelType' => [
+                        'label' => 'Channel Type',
                         'tab' => 'Manage',
                         'span' => 'right',
+                        'type' => 'relation',
+                        'comment' => 'This can not be changed, choose wisely.',
+                        'context' => 'create',
+                    ],
+                    'fields' => [
+                        'label' => 'Channel Fields',
+                        'tab' => 'Manage',
+                        'span' => 'left',
                         'type' => 'relation',
                         'commentAbove' => 'Choose the fields belonging to this Channel',
                         'placeholder' => 'No Fields'
@@ -85,6 +95,11 @@ class Channels extends Controller
                     'description' => [
                         'label' => 'Description'
                     ],
+                    'type' => [
+                        'label' => 'Type',
+                        'relation' => 'channelType',
+                        'select' => 'mey_channel_types.name',
+                    ],
                     'fields' => [
                         'label' => 'Fields',
                         'relation' => 'fields',
@@ -117,5 +132,15 @@ class Channels extends Controller
 
         BackendMenu::setContext('Mey.Channels', 'channels', 'channels');
         $this->addCss('/plugins/mey/channels/assets/css/mey.channels.main.css');
+    }
+
+    public function index()
+    {
+        $this->channels = Channel::with('channelType')->paginate(15);
+    }
+    public function entries($slug = '')
+    {
+        $this->channel = Channel::where('short_name', '=', $slug)->first();
+        $this->entries = $this->channel->entries()->paginate(15);
     }
 }

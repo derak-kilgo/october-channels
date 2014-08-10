@@ -1,0 +1,38 @@
+<div class="channels-container">
+    <div class="row">
+        <div class="col-xs-12">
+            <ol class="breadcrumb">
+                <li><a href="<?= Backend::url('mey/channels/channels') ?>">Home</a></li>
+                <li class="active"><?=$this->channel->name?> Entries</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div data-control="toolbar">
+                <a href="<?= Backend::url('mey/channels/entries/create') ?>" class="btn btn-primary oc-icon-plus">New Entry</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>
+                <?= $this->channel->name ?> Entries
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6 col-md-2">
+            Name
+        </div>
+        <div class="col-xs-6 col-md-2">
+            Created
+        </div>
+        <div class="col-xs-6 col-md-2">
+            Updated
+        </div>
+        <div class="col-xs-6 col-md-2">
+            Published
+        </div>
+    </div>
+</div>

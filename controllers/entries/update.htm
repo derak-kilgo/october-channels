@@ -36,7 +36,7 @@
                     data-load-indicator="Deleting Entry..."
                     data-request-confirm="Do you really want to delete this Entry?">
                 </button>
-                <span class="btn-text">or <a href="<?= Backend::url('mey/channels/entries') ?>">Cancel</a></span>
+                <span class="btn-text">or <a href="<?= Backend::url('mey/channels/channels') ?>">Cancel</a></span>
             </div>
             <?= Form::close() ?>
         </div>
@@ -44,5 +44,4 @@
 
 <?php else: ?>
     <p class="flash-message static error"><?= e($this->fatalError) ?></p>
-    <p><a href="<?= Backend::url('mey/channels/entries') ?>" class="btn btn-default">Return to Entries</a></p>
 <?php endif ?>

@@ -216,7 +216,7 @@ class Entries extends Controller
     {
         $inputs = \Input::all()['Entry'];
         $entry = $this->entry;
-        $entryFieldValues = $inputs['entryField'];
+        $this->saveEntryFields($inputs['entryField']);
         unset($inputs['entryField']);
 
         //Override default behavior to not set published if left blank
@@ -229,26 +229,6 @@ class Entries extends Controller
 
         $entry->save();
 
-        foreach ($entryFieldValues as $shortName => $values) {
-            foreach ($values as $key => $value) {
-                if ($key === 'new') {
-                    $fieldId = array_keys($value)[0];
-                    $fieldValue = array_shift($value);
-                    $field = Field::find($fieldId);
-                    $entryField = EntryField::create(
-                        [
-                            'field_id' => $field->id,
-                            'entry_id' => $entry->id,
-                            'value' => $fieldValue
-                        ]
-                    );
-                } else {
-                    $entryField = EntryField::find($key);
-                    $entryField->value = $value;
-                }
-            }
-            $entryField->save();
-        }
 
         \Flash::success('Entry Fields Saved Successfully');
     }
@@ -282,6 +262,36 @@ class Entries extends Controller
                 }
             }
         });
+    }
+
+    /**
+     * Saves or creates a new entryField for each entryField input that comes back
+     * for the entry
+     *
+     * @param array $entryFieldValues
+     */
+    private function saveEntryFields($entryFieldValues)
+    {
+        foreach ($entryFieldValues as $shortName => $values) {
+            foreach ($values as $key => $value) {
+                if ($key === 'new') {
+                    $fieldId = array_keys($value)[0];
+                    $fieldValue = array_shift($value);
+                    $entryField = EntryField::create(
+                        [
+                            'field_id' => $fieldId,
+                            'entry_id' => $this->entry->id,
+                            'value' => $fieldValue
+                        ]
+                    );
+                } else {
+                    $entryField = EntryField::find($key);
+                    $entryField->value = $value;
+                    $entryField->save();
+                }
+            }
+        }
+        return;
     }
 
 }

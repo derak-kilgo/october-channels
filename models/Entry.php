@@ -79,4 +79,19 @@ class Entry extends Model
             return true;
         });
     }
+
+    public function toArrayWithFields()
+    {
+        $entryAttributes = get_object_vars($this)['attributes'];
+        $fields = [];
+        foreach ($entryAttributes as $attributeName => $attributeValue) {
+            $fields[$attributeName] = $attributeValue;
+        }
+
+        foreach ($this->fields as $field) {
+            $fields[$field->field->short_name] = $field->value;
+        }
+        return $fields;
+    }
+
 }

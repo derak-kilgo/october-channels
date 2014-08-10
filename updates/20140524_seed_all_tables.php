@@ -9,6 +9,7 @@ use Mey\Channels\Models\Field;
 use Mey\Channels\Models\EntryField;
 use Mey\Channels\Models\FieldGroup;
 use Mey\Channels\Models\ChannelType;
+use Mey\Channels\Models\FieldType;
 
 class SeedAllTables extends Seeder
 {
@@ -34,8 +35,15 @@ class SeedAllTables extends Seeder
         ]);
 
         ChannelType::create([
+            'name' => 'Default',
+            'short_name' => 'default',
+            'description' => 'A default channel containing a multitude of entries',
+        ]);
+
+        ChannelType::create([
             'name' => 'Single',
             'short_name' => 'single',
+            'description' => 'A special type of channel that can only hold one entry, this changes how we access the entry in the template.',
         ]);
     }
 }

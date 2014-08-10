@@ -1,0 +1,19 @@
+<?php require('_entries_header.htm') ?>
+<div class="channels-container">
+<?php if ($this->entries->count() > 0): ?>
+    <?php foreach($this->entries as $entry):?>
+    <div class="row">
+        <?php require('_entries_row.htm') ?>
+    </div>
+    <?endforeach?>
+    <?= $this->entries->links() ?>
+<?php else: ?>
+<div class="row">
+    <div class="col-xs-12">
+        No Entries
+    </div>
+</div>
+</div>
+
+<?php endif ?>
+

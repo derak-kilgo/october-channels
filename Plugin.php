@@ -29,7 +29,10 @@ class Plugin extends PluginBase
 
     public function registerComponents()
     {
-        return [ 'Mey\Channels\Components\Channel' => 'channel' ];
+        return [
+            'Mey\Channels\Components\Channel' => 'channel',
+            'Mey\Channels\Components\Entry' => 'entry',
+        ];
     }
 
 
@@ -43,12 +46,6 @@ class Plugin extends PluginBase
                 'permissions' => ['channels.*'],
                 'order'       => 212,
                 'sideMenu' => [
-                    'entries' => [
-                        'label'       => 'Entries',
-                        'icon'        => 'icon-cubes',
-                        'url'         => Backend::url('mey/channels/entries'),
-                        'permissions' => ['entries.*'],
-                    ],
                     'channels' => [
                         'label'       => 'Channels',
                         'icon'        => 'icon-cube',

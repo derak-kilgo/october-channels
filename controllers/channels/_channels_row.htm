@@ -1,0 +1,12 @@
+<div class="col-xs-6 col-md-2">
+    <a href="<?= Backend::url('mey/channels/channels/entries/'.$channel->short_name) ?>"><?=$channel->name?></a>
+</div>
+<div class="col-xs-6 col-md-2">
+    <?=$channel->channelType->name?>
+</div>
+<div class="col-xs-6 col-md-2">
+    <?=$channel->channelType->short_name?>
+</div>
+<div class="col-xs-6 col-md-2">
+    <a href="<?=Backend::url('mey/channels/channels/update/'.$channel->id)?>">Edit <i class="icon-pencil-square"></i></a>
+</div>

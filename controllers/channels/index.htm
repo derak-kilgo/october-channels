@@ -1,1 +1,19 @@
-<?= $this->listRender() ?>
+<?php require('_channels_header.htm') ?>
+<div class="channels-container">
+<?php if ($this->channels->count() > 0): ?>
+    <?php foreach($this->channels as $channel):?>
+    <div class="row">
+        <?php require('_channels_row.htm') ?>
+    </div>
+    <?endforeach?>
+    <?= $this->channels->links() ?>
+<?php else: ?>
+<div class="row">
+    <div class="col-xs-12">
+        No Channels
+    </div>
+</div>
+</div>
+
+<?php endif ?>
+

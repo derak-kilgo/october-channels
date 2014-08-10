@@ -45,15 +45,7 @@ class Collection extends BaseCollection
         $collection = [];
         $fields = [];
         foreach ($this->items as $entry) {
-            $entryAttributes = get_object_vars($entry)['attributes'];
-            foreach ($entryAttributes as $attributeName => $attributeValue) {
-                $fields[$attributeName] = $attributeValue;
-            }
-
-            foreach ($entry->fields as $field) {
-                $fields[$field->field->short_name] = $field->value;
-            }
-            $collection[$entry->short_name] = $fields;
+            $collection[$entry->short_name] = $entry->toArrayWithFields();
         }
         $this->items = $collection;
         return $this;

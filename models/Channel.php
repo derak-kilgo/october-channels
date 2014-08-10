@@ -52,4 +52,9 @@ class Channel extends Model
     {
         return $this->belongsTo('Mey\Channels\Models\ChannelType', 'channel_type_id');
     }
+
+    public function isSingle()
+    {
+        return $this->channelType()->first()->short_name === 'single';
+    }
 }
