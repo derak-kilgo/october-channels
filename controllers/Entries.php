@@ -123,7 +123,7 @@ class Entries extends Controller
                         'span' => 'right',
                         'attributes' => [
                             'data-input-preset' => 'input[name="Entry[name]"]',
-                            'data-input-preset-type' => 'camel',
+                            'data-input-preset-type' => 'slug',
                             'data-input-preset-closest-parent' => 'form',
                         ]
                     ],
