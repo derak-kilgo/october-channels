@@ -8,6 +8,7 @@ use Mey\Channels\Models\Entry;
 use Mey\Channels\Models\Channel;
 use Mey\Channels\Models\Field;
 use Mey\Channels\Models\EntryField;
+use October\Rain\Support\Markdown;
 use Request;
 use Input;
 
@@ -169,6 +170,11 @@ class Entries extends Controller
                     'type' => $fieldType->short_name,
                     'tab' => 'Fields',
                 ];
+                //Markdown hack
+                if ($fieldType->short_name === 'markdown') {
+                    $formConfig["entryField"][$channelField->short_name]["new"][$channelField->id]['type'] = 'codeeditor';
+                    $formConfig["entryField"][$channelField->short_name]["new"][$channelField->id]['language'] = 'markdown';
+                }
             }
             if ($entryFields->count() >= 1) {
                 foreach ($entryFields as $entryField) {
@@ -181,6 +187,10 @@ class Entries extends Controller
                             'type' => $fieldType->short_name,
                             'default' => $entryField->value,
                         ];
+                        if ($fieldType->short_name === 'markdown') {
+                            $formConfig["entryField"][$field->short_name][$entryField->id]['type'] = 'codeeditor';
+                            $formConfig["entryField"][$field->short_name][$entryField->id]['language'] = 'markdown';
+                        }
                     }
                 }
             }
@@ -246,19 +256,19 @@ class Entries extends Controller
             if ($this->entry instanceof Entry) {
                 //Helps with published default values
                 if ($this->entry->published != 1) {
-                    $widget->allFields['published']->value = 0;
+                    $widget->getField('published')->value = 0;
                 }
             }
 
-            if (is_null($widget->allFields['published_at']->value)) {
+            if (is_null($widget->getField('published_at')->value)) {
                 $date = new \DateTime;
-                $widget->allFields['published_at']->value = $date->format('Y-m-d H:i:s');
+                $widget->getField('published_at')->value = $date->format('Y-m-d H:i:s');
             }
 
             $fields = $controller->needsDefault;
             if (!empty($fields)) {
                 foreach ($fields as $field => $value) {
-                    $widget->allFields[$field]->value = $value;
+                    $widget->getField($field)->value = $value;
                 }
             }
         });
@@ -276,16 +286,30 @@ class Entries extends Controller
             foreach ($values as $key => $value) {
                 if ($key === 'new') {
                     $fieldId = array_keys($value)[0];
+                    $field = Field::where('id', '=', $fieldId)->with('fieldType')->first();
+                    $fieldType = $field->fieldType;
                     $fieldValue = array_shift($value);
+
+                    if ($fieldType->short_name === 'markdown') {
+                        $processedValue = $this->formatHtml($fieldValue);
+                    }
+
                     $entryField = EntryField::create(
                         [
                             'field_id' => $fieldId,
                             'entry_id' => $this->entry->id,
-                            'value' => $fieldValue
+                            'value' => $fieldValue,
+                            'processed_value' => $processedValue ? $processedValue : null
                         ]
                     );
                 } else {
-                    $entryField = EntryField::find($key);
+                    $entryField = EntryField::where('id', '=', $key)->with('field', 'field.fieldtype')->first();
+                    $fieldType = $entryField->field->fieldType;
+
+                    if ($fieldType->short_name === 'markdown') {
+                        $entryField->processed_value = $this->formatHtml($value);
+                    }
+
                     $entryField->value = $value;
                     $entryField->save();
                 }
@@ -294,4 +318,10 @@ class Entries extends Controller
         return;
     }
 
+    public static function formatHtml($input)
+    {
+        $result = Markdown::parse(trim($input));
+
+        return $result;
+    }
 }

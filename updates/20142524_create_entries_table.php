@@ -29,6 +29,7 @@ class CreateEntriesTable extends Migration
             $table->integer('entry_id')->unsigned();
             $table->integer('field_id')->unsigned();
             $table->longText('value');
+            $table->longText('processed_value');
             $table->timestamps();
             $table->softDeletes();
         });
